@@ -48,16 +48,16 @@ const expected = {
 };
 
 describe('basic app functionality', function() {
-  it('should receive Echo search results with amazon vendor', function(done) {
-    request(app)
-      .get('/Echo?vendor=amazon')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
+  it('should receive Echo search results with amazon vendor, and receive result from cache 2nd time', async function() {
+    let response;
+    for (let i = 0; i < 2; i++) {
+      response = await request(app)
+        .get('/Echo?vendor=amazon')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/);
       // eslint-disable-next-line no-loop-func
-      .then(response => {
-        expect(response.body).to.shallowDeepEqual(expected);
 
-        done();
-      });
+      expect(response.body).to.shallowDeepEqual(expected);
+    }
   });
 });

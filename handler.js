@@ -1,5 +1,9 @@
 var mongoose = require('mongoose');
 const { Products } = require('./models/product');
+
+const NodeCache = require('node-cache');
+const cache = new NodeCache({ stdTTL: 60 * 5 });
+
 mongoose.connect(
   'mongodb://localhost:27017/snappy',
   {
@@ -20,29 +24,36 @@ db.once('open', function() {
 });
 
 const search = (keyword, vendor, res) => {
-  Products.findOne({}, function(err, products) {
-    if (err) {
-      console.log(err);
-      return;
-    }
+  const key = `key: ${keyword} vendor: ${vendor}`;
 
-    const searchRes = products.products.filter(product => {
-      const containsKey = product.name.includes(keyword);
-      if (vendor) {
-        return containsKey && product.vendor === vendor;
+  let generalRes = cache.get(key);
+  if (generalRes) return res.send(generalRes);
+
+  Products.findOne()
+    .lean()
+    .exec(function(err, products) {
+      if (err) {
+        console.log(err);
+        return;
       }
-      return containsKey;
+
+      const searchRes = products.products.filter(product => {
+        const containsKey = product.name.includes(keyword);
+        if (vendor) {
+          return containsKey && product.vendor === vendor;
+        }
+        return containsKey;
+      });
+
+      generalRes = {
+        products: searchRes,
+        promotion: products.promotion
+      };
+
+      cache.set(key, generalRes);
+
+      res.send(generalRes);
     });
-
-    const generalRes = {
-      products: searchRes,
-      promotion: products.promotion
-    };
-
-    // console.log(`found products: ${JSON.stringify(res, null, 4)}`);
-
-    res.send(generalRes);
-  });
 };
 
 module.exports = {
