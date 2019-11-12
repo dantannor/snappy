@@ -5,8 +5,6 @@ const port = 3000;
 
 app.get('/:keyword', (req, res) => {
   try {
-    // console.log(`received request: ${JSON.stringify(req, null, 4)}`);
-
     var keyword = req.params.keyword;
     var vendor = req.query.vendor;
 

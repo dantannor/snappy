@@ -1,0 +1,6 @@
+{
+  "user": "user@gmail.com",
+  "pass": "pass",
+  "to": "user2@gmail.com",
+  "connection": "mongodb://localhost:27017/snappy"
+}

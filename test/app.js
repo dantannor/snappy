@@ -48,7 +48,7 @@ const expected = {
 };
 
 describe('basic app functionality', function() {
-  it('should receive Echo search results with amazon vendor, and receive result from cache 2nd time', async function() {
+  it('should receive Echo search results with amazon vendor, and receive result from cache 2nd response', async function() {
     let response;
     for (let i = 0; i < 2; i++) {
       response = await request(app)
