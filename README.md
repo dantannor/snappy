@@ -6,6 +6,7 @@ usage:
 - configure mongo connection string in config/default.json
 - run app.js
 - GET /$searchTerm?vendor=$vendor in order to search
+- run test/app.js to see valid test flow
 
 decisions:
 
